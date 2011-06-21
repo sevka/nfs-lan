@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+if [ -d /usr/lib/pymodules/python2.5 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/pymodules/python2.5/nfs_lan ; fi;
+if [ -d /usr/lib/pymodules/python2.6 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/pymodules/python2.6/nfs_lan ; fi;
+if [ -d /usr/lib/pymodules/python2.7 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/pymodules/python2.7/nfs_lan ; fi;
+exit 0
