@@ -59,10 +59,10 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		'''	
 	def get_file_items(self, window, files):
 		if len(files) > 1 or not files[0].is_directory():
-			return false
+			return False
 		filename = urllib.unquote(files[0].get_uri()[7:])
 		if not filename.startswith(self.net_folder):
-			return false
+			return False
 		item = nautilus.MenuItem('nfs-lan::file-refresh',
 								 'Refresh NFS',
 								 'Refresh NFS')
@@ -73,7 +73,7 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 	def get_background_items(self, window, file):
 		filename = urllib.unquote(file.get_uri()[7:])
 		if not file.is_directory() or not filename.startswith(self.net_folder):
-			return false
+			return False
 		
 		item = nautilus.MenuItem('nfs-lan::background-refresh',
 								 'Refresh NFS',
@@ -86,7 +86,7 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 	def get_toolbar_items(self, window, file):
 		filename = urllib.unquote(file.get_uri()[7:])
 		if not file.is_directory() or not filename.startswith(self.net_folder):
-			return false
+			return False
 	
 		item = nautilus.MenuItem('nfs-lan::toolbar-refresh',
 								 'Refresh NFS',
@@ -144,7 +144,7 @@ class LocationProviderExample(nautilus.LocationWidgetProvider):
     def get_widget(self, uri, window):
     	filename = urllib.unquote(uri[7:])
     	if not filename.startswith(netFolder):
-			return false
+			return False
 
         hbox = InfoPanel('Test')
         hbox.show_all()
