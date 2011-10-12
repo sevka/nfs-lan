@@ -95,7 +95,10 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 	def get_toolbar_items(self, window, file):
 		if not file:
 			return
-		filename = urllib.unquote(file.get_uri()[7:])
+		try:
+			filename = urllib.unquote(file.get_uri()[7:])
+		except:
+			filename = file.get_uri()[7:]
 		if filename.startswith(self.net_folder):
 			return
 	

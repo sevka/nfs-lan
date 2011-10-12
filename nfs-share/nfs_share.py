@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#	nfs-share.py
+#		nfs-share.py
 #
 #       Copyright 2011 Sevka <sevka@ukr.net>
 #       
@@ -23,8 +23,9 @@
 """NFS share dialog window"""
 import sys
 import shutil
-from commands import *
+from commands import getoutput
 import os
+from re import search
 try:
  	import pygtk
   	pygtk.require("2.0")
@@ -32,33 +33,29 @@ except:
   	pass
 try:
 	import gtk
-  	import gtk.glade
 except:
 	sys.exit(1)
 import gio
 
 class ExportsSharing:
-	"""Class for /etc/exports manipulation"""
+	"""Class for exportfs calls"""
 	def __init__(self, folder):
-		self.exportsFile = "/etc/exports"
-		#self.exportsFile = "/home/sevka/projects/nfs-share/exports"
-		self.lineNo = -1;
 		self.folder = folder
 		self.shared = False
 		self.writable = False
-		file = open(self.exportsFile, "r")
-		lines = file.readlines()
-		file.close()
-		l = 0;
-		for line in lines:
-			if (not line.startswith("#")):
-				if (line.startswith(self.folder) and (line[len(self.folder)] == " " or line[len(self.folder)] == "\t")):
-					self.lineNo = l
-					self.shared = True
-					if ("*(rw," in line):
-						self.writable = True
-			l = l + 1
-	
+		
+		result = getoutput('exportfs -v|grep -A 1 "' + self.folder + '"')
+		if result:
+			lines = result.splitlines()
+			for i in range(0,len(lines),2):
+				if len(lines[i]) <> len(self.folder):
+					continue
+				self.shared = True
+				m = search('\((.*)\)',lines[i+1])
+				options = m.groups()[0].split(',')
+				if 'rw' in options:
+					self.writable = True
+				
 	def isShared(self):
 		return self.shared
 		
@@ -66,60 +63,20 @@ class ExportsSharing:
 		return self.writable
 	
 	def restartNFS(self):
-		getoutput('exportfs -arv')
-		#getoutput('touch /home/sevka/projects/nfs-share/a.txt')
+		pass
+		#getoutput('exportfs -arv')
 	
 	def share(self, writable):
-		if not self.backupExports():
-			return False
 		if writable:
-			configString = "*(rw,async,subtree_check)"
+			configString = "rw,async,subtree_check"
 		else:
-			configString = "*(ro,async,subtree_check)"
-			
-		if (not self.isShared()):
-			try:
-				file = open(self.exportsFile, "a")
-				print >> file, self.folder + "\t" + configString
-				return True
-			except:
-				return False
-		else:
-			file = open(self.exportsFile, "r")
-			lines = file.readlines()
-			file.close()
-			lines[self.lineNo] = self.folder + "\t" + configString + "\n"
-			try:
-				file = open(self.exportsFile, "w")
-				file.truncate()
-				file.writelines(lines)
-				file.close
-				return True
-			except:
-				return False
+			configString = "ro,async,subtree_check"
+		result = getoutput('exportfs -o ' + configString + ' *:"' + self.folder  + '"')
+		return True
 	
 	def unshare(self):
-		if not self.backupExports():
-			return False
-		file = open(self.exportsFile, "r")
-		lines = file.readlines()
-		file.close()
-		del lines[self.lineNo]
-		try:
-			file = open(self.exportsFile, "w")
-			file.truncate()
-			file.writelines(lines)
-			file.close
-			return True
-		except:
-			return False
-	
-	def backupExports(self):
-		try:
-			shutil.copyfile(self.exportsFile, self.exportsFile + "~")
-			return True
-		except:
-			return False
+		result = getoutput('exportfs -u *:"' + self.folder  + '"')
+		return True
 #-------------------------------------------------------------------------------
 class NfsShareWindow(gtk.Window):
 	'''
