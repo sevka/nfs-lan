@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#		nfs-share.py
+#	nfs-share.py
 #
 #       Copyright 2011 Sevka <sevka@ukr.net>
 #       
