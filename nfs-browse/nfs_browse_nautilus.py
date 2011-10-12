@@ -58,11 +58,11 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 				os.system("cd " + self.net_folder + "/" + comp)
 		'''	
 	def get_file_items(self, window, files):
-		if len(files) > 1 or not files[0].is_directory():
-			return False
+		if len(files) != 1 or (len(files) == 0 and not files[0].is_directory()):
+			return
 		filename = urllib.unquote(files[0].get_uri()[7:])
 		if not filename.startswith(self.net_folder):
-			return False
+			return
 		item = nautilus.MenuItem('nfs-lan::file-refresh',
 								 'Refresh NFS',
 								 'Refresh NFS')
@@ -71,9 +71,11 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		return item,
 	
 	def get_background_items(self, window, file):
+		if not file:
+			return
 		filename = urllib.unquote(file.get_uri()[7:])
 		if not file.is_directory() or not filename.startswith(self.net_folder):
-			return False
+			return
 		
 		item = nautilus.MenuItem('nfs-lan::background-refresh',
 								 'Refresh NFS',
@@ -84,9 +86,15 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		return item,
 	
 	def get_toolbar_items(self, window, file):
-		filename = urllib.unquote(file.get_uri()[7:])
+		if not file:
+			return
+		try:
+			filename = urllib.unquote(file.get_uri()[7:])
+		except:
+			filename = file.get_uri()[7:]
+		
 		if not file.is_directory() or not filename.startswith(self.net_folder):
-			return False
+			return
 	
 		item = nautilus.MenuItem('nfs-lan::toolbar-refresh',
 								 'Refresh NFS',
@@ -142,6 +150,8 @@ class LocationProviderExample(nautilus.LocationWidgetProvider):
         pass
     
     def get_widget(self, uri, window):
+    	if not uri:
+    		return False
     	filename = urllib.unquote(uri[7:])
     	if not filename.startswith(netFolder):
 			return False

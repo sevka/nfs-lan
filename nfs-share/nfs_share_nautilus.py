@@ -37,6 +37,8 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		self.net_folder = '/net'	#config.get('main', 'net_folder')
 		
 	def update_file_info(self, file):
+		if not file:
+			return
 		filename = urllib.unquote(file.get_uri()[7:])
 		if not file.is_directory() or file.get_uri_scheme() != 'file' or filename.startswith(self.net_folder):
 			return
@@ -77,6 +79,8 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		return item,
 
 	def get_background_items(self, window, file):
+		if not file:
+			return
 		filename = urllib.unquote(file.get_uri()[7:])
 		if filename.startswith(self.net_folder):
 			return
@@ -89,6 +93,8 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		return item,
 		
 	def get_toolbar_items(self, window, file):
+		if not file:
+			return
 		filename = urllib.unquote(file.get_uri()[7:])
 		if filename.startswith(self.net_folder):
 			return
