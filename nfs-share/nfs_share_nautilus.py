@@ -22,16 +22,18 @@
 import os
 import urllib
 import sys
-from nfs_lan.nfs_share import ExportsSharing
-import gtk
-import nautilus
-import gconf
+from nfs_lan.exports_sharing import ExportsSharing
+#import gtk
+#import nautilus
+#import gconf
 import urllib
+
+from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
 #from ConfigParser import ConfigParser
 
-class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
+class NfsShareExtension(GObject.GObject, Nautilus.MenuProvider, Nautilus.InfoProvider):
 	def __init__(self):
-		self.client = gconf.client_get_default()
+		#self.client = gconf.client_get_default()
 		#config = ConfigParser({'net_folder':'/net'})
 		#config.read(os.path.expanduser('~/.nfs-lan'))
 		self.net_folder = '/net'	#config.get('main', 'net_folder')
@@ -71,12 +73,12 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		if not file.is_directory() or file.get_uri_scheme() != 'file' or filename.startswith(self.net_folder):
 			return
 
-		item = nautilus.MenuItem('nfs-share::file-share',
-								 'Share this folder through NFS...',
-								 'Share folder %s through NFS' % file.get_name())
+		item = Nautilus.MenuItem(name='nfs-share::file-share',
+								 label='Share this folder through NFS...',
+								 tip='Share folder %s through NFS' % file.get_name())
 		item.set_property('icon', 'folder-remote')
 		item.connect('activate', self.menu_activate_cb, file)
-		return item,
+		return [item]
 
 	def get_background_items(self, window, file):
 		if not file:
@@ -85,23 +87,9 @@ class NfsShareExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		if filename.startswith(self.net_folder):
 			return
 
-		item = nautilus.MenuItem('nfs-share::background-share',
-								 'Share this folder through NFS...',
-								 'Share folder %s through NFS' % file.get_name())
+		item = Nautilus.MenuItem(name='nfs-share::background-share',
+								 label='Share this folder through NFS...',
+								 tip='Share folder %s through NFS' % file.get_name())
 		item.set_property('icon', 'folder-remote')
 		item.connect('activate', self.menu_background_activate_cb, file)
-		return item,
-		
-	def get_toolbar_items(self, window, file):
-		if not file:
-			return
-		filename = urllib.unquote(file.get_uri()[7:])
-		if filename.startswith(self.net_folder):
-			return
-	
-		item = nautilus.MenuItem('nfs-share::toolbar-share',
-								 'Share this folder through NFS...',
-								 'Share folder %s through NFS' % file.get_name())
-		item.set_property('icon', 'folder-remote')
-		item.connect('activate', self.menu_background_activate_cb, file)
-		return item,		
+		return [item]

@@ -22,8 +22,8 @@
 
 """NFS share dialog window"""
 import sys
-import shutil
-from commands import *
+#import shutil
+#from commands import *
 import os
 try:
  	import pygtk
@@ -32,95 +32,12 @@ except:
   	pass
 try:
 	import gtk
-  	import gtk.glade
+#  	import gtk.glade
 except:
 	sys.exit(1)
 import gio
+from exports_sharing import ExportsSharing
 
-class ExportsSharing:
-	"""Class for /etc/exports manipulation"""
-	def __init__(self, folder):
-		self.exportsFile = "/etc/exports"
-		#self.exportsFile = "/home/sevka/projects/nfs-share/exports"
-		self.lineNo = -1;
-		self.folder = folder
-		self.shared = False
-		self.writable = False
-		file = open(self.exportsFile, "r")
-		lines = file.readlines()
-		file.close()
-		l = 0;
-		for line in lines:
-			if (not line.startswith("#")):
-				if (line.startswith(self.folder) and (line[len(self.folder)] == " " or line[len(self.folder)] == "\t")):
-					self.lineNo = l
-					self.shared = True
-					if ("*(rw," in line):
-						self.writable = True
-			l = l + 1
-	
-	def isShared(self):
-		return self.shared
-		
-	def isWritable(self):
-		return self.writable
-	
-	def restartNFS(self):
-		getoutput('exportfs -arv')
-		#getoutput('touch /home/sevka/projects/nfs-share/a.txt')
-	
-	def share(self, writable):
-		if not self.backupExports():
-			return False
-		if writable:
-			configString = "*(rw,async,subtree_check)"
-		else:
-			configString = "*(ro,async,subtree_check)"
-			
-		if (not self.isShared()):
-			try:
-				file = open(self.exportsFile, "a")
-				print >> file, self.folder + "\t" + configString
-				return True
-			except:
-				return False
-		else:
-			file = open(self.exportsFile, "r")
-			lines = file.readlines()
-			file.close()
-			lines[self.lineNo] = self.folder + "\t" + configString + "\n"
-			try:
-				file = open(self.exportsFile, "w")
-				file.truncate()
-				file.writelines(lines)
-				file.close
-				return True
-			except:
-				return False
-	
-	def unshare(self):
-		if not self.backupExports():
-			return False
-		file = open(self.exportsFile, "r")
-		lines = file.readlines()
-		file.close()
-		del lines[self.lineNo]
-		try:
-			file = open(self.exportsFile, "w")
-			file.truncate()
-			file.writelines(lines)
-			file.close
-			return True
-		except:
-			return False
-	
-	def backupExports(self):
-		try:
-			shutil.copyfile(self.exportsFile, self.exportsFile + "~")
-			return True
-		except:
-			return False
-#-------------------------------------------------------------------------------
 class NfsShareWindow(gtk.Window):
 	'''
 	"Share" window 
@@ -251,5 +168,3 @@ if __name__ == "__main__":
 		a.show_all()
 		gtk.gdk.threads_init()
 		gtk.main()
-	
-

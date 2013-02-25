@@ -21,25 +21,26 @@
 
 import os
 import urllib
-import gtk
-import nautilus
-import gconf
-import urllib
+#import gtk
+#import nautilus
+#import gconf
+#import urllib
 from nfs_lan.nfs_browse import AvahiNFSBrowse
 #from ConfigParser import ConfigParser
-import gio
+from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
+#import gio
 
 #config = ConfigParser({'net_folder':'/net'})
 #config.read(os.path.expanduser('~/.nfs-lan'))
 netFolder = '/net'	#config.get('main', 'net_folder')
 
-class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
+class NfsBrowseExtension(GObject.GObject, Nautilus.MenuProvider, Nautilus.InfoProvider):
 	"""
 	Nautilus extension
 	"""
 
 	def __init__(self):
-		self.client = gconf.client_get_default()
+#		self.client = gconf.client_get_default()
 		self.net_folder = netFolder
 	
 	def menu_activate_cb(self, menu, file):
@@ -63,12 +64,12 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		filename = urllib.unquote(files[0].get_uri()[7:])
 		if not filename.startswith(self.net_folder):
 			return
-		item = nautilus.MenuItem('nfs-lan::file-refresh',
-								 'Refresh NFS',
-								 'Refresh NFS')
+		item = Nautilus.MenuItem(name='nfs-lan::file-refresh',
+								 label='Refresh NFS',
+								 tip='Refresh NFS')
 		item.set_property('icon', 'gtk-refresh')
 		item.connect('activate', self.menu_activate_cb, file)
-		return item,
+		return [item]
 	
 	def get_background_items(self, window, file):
 		if not file:
@@ -77,35 +78,16 @@ class NfsBrowseExtension(nautilus.MenuProvider, nautilus.InfoProvider):
 		if not file.is_directory() or not filename.startswith(self.net_folder):
 			return
 		
-		item = nautilus.MenuItem('nfs-lan::background-refresh',
-								 'Refresh NFS',
-								 'Refresh NFS')
+		item = Nautilus.MenuItem(name='nfs-lan::background-refresh',
+								 label='Refresh NFS',
+								 tip='Refresh NFS')
 		item.set_property('icon', 'gtk-refresh')
 		item.connect('activate', self.menu_background_activate_cb, file)
 		
-		return item,
-	
-	def get_toolbar_items(self, window, file):
-		if not file:
-			return
-		try:
-			filename = urllib.unquote(file.get_uri()[7:])
-		except:
-			filename = file.get_uri()[7:]
-		
-		if not file.is_directory() or not filename.startswith(self.net_folder):
-			return
-	
-		item = nautilus.MenuItem('nfs-lan::toolbar-refresh',
-								 'Refresh NFS',
-								 'Refresh NFS' )
-		item.set_property('icon', 'gtk-refresh')
-		item.connect('activate', self.menu_background_activate_cb, file)
-
-		return item,
+		return [item]
 #-------------------------------------------------------------------------------
-class InfoPanel(gtk.HBox):
-	
+
+class InfoPanel(Gtk.HBox):
 	
 	def __openComp(self, sender):
 		compName = self.entry.get_text()
@@ -117,35 +99,35 @@ class InfoPanel(gtk.HBox):
 		a.walk_comps()
 		
 	def __init__(self, label):
-		gtk.HBox.__init__(self, False)
+		Gtk.HBox.__init__(self, False)
 		self.net_folder = netFolder		
-		image =  gtk.image_new_from_gicon(gio.ThemedIcon('preferences-system-network'),gtk.ICON_SIZE_LARGE_TOOLBAR)
-#		image.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_LARGE_TOOLBAR)
-		label = gtk.Label('<b>NFS network</b>')
+#		image =  Gtk.image_new_from_gicon(gio.ThemedIcon('preferences-system-network'),Gtk.ICON_SIZE_LARGE_TOOLBAR)
+#		image.set_from_stock(Gtk.STOCK_CONNECT, Gtk.ICON_SIZE_LARGE_TOOLBAR)
+		label = Gtk.Label('<b>NFS network</b>')
 		label.set_use_markup(True)
-		btn = gtk.Button(gtk.STOCK_REFRESH)
+		btn = Gtk.Button(Gtk.STOCK_REFRESH)
 		btn.set_use_stock(True)
-		label3 = gtk.Label('Computer name or ip:')
-		self.entry = gtk.Entry()
-		btn2 = gtk.Button('Go', gtk.STOCK_GO_FORWARD)
+		label3 = Gtk.Label('Computer name or ip:')
+		self.entry = Gtk.Entry()
+		btn2 = Gtk.Button('Ok', Gtk.STOCK_OK)
 		btn.connect('clicked',self.__refresh)
 		btn2.connect('clicked', self.__openComp)
-		btn3 = gtk.Button('Help', gtk.STOCK_HELP)
-		btn4 = gtk.Button('Preferences', gtk.STOCK_PREFERENCES)
+		btn3 = Gtk.Button('Help', Gtk.STOCK_HELP)
+		btn4 = Gtk.Button('Preferences', Gtk.STOCK_PREFERENCES)
 		
-		hbox2 = gtk.HBox(False)
-		hbox2.pack_start(label3, False)
-		hbox2.pack_start(self.entry, False)
-		hbox2.pack_start(btn2, False)		
+		hbox2 = Gtk.HBox(False)
+		hbox2.pack_start(label3, False, False, 10)
+		hbox2.pack_start(self.entry, False, False, 10)
+		hbox2.pack_start(btn2, False, False, 10)
 		
-		self.pack_start(image, False)
+#		self.pack_start(image, False, False, 10)
 		self.pack_start(label, False, False, 10)
 		self.pack_start(btn, False, False, 10)
 		self.pack_start(hbox2, False, False, 10)
 		#self.pack_start(btn3, False,False, 10)
 		#self.pack_start(btn4, False,False, 10)		
 
-class LocationProviderExample(nautilus.LocationWidgetProvider):
+class LocationProviderExample(GObject.GObject, Nautilus.LocationWidgetProvider):
     def __init__(self):
         pass
     
@@ -155,8 +137,8 @@ class LocationProviderExample(nautilus.LocationWidgetProvider):
     	filename = urllib.unquote(uri[7:])
     	if not filename.startswith(netFolder):
 			return False
-
-        hbox = InfoPanel('Test')
-        hbox.show_all()
-        return hbox
-		
+	frame = Gtk.Frame()
+	hbox = InfoPanel('Test')
+	frame.add(hbox)
+	frame.show_all()
+	return frame
