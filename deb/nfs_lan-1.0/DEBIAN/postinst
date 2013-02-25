@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+if [ -d /usr/lib/python2.5 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/python2.5/nfs_lan ; fi;
+if [ -d /usr/lib/python2.6 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/python2.6/nfs_lan ; fi;
+if [ -d /usr/lib/python2.7 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/python2.7/nfs_lan ; fi;
+if [ -d /usr/lib/python2.8 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/python2.8/nfs_lan ; fi;
+if [ -d /usr/lib/python2.9 ]; then ln -fs /usr/share/pyshared/nfs_lan /usr/lib/python2.9/nfs_lan ; fi;
+exit 0
