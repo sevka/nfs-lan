@@ -23,9 +23,6 @@ import os
 import urllib
 import sys
 from nfs_lan.exports_sharing import ExportsSharing
-#import gtk
-#import nautilus
-#import gconf
 import urllib
 
 from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf

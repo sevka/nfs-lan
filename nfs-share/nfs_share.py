@@ -22,8 +22,6 @@
 
 """NFS share dialog window"""
 import sys
-#import shutil
-#from commands import *
 import os
 try:
  	import pygtk
@@ -32,7 +30,6 @@ except:
   	pass
 try:
 	import gtk
-#  	import gtk.glade
 except:
 	sys.exit(1)
 import gio

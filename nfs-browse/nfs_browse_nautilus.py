@@ -21,14 +21,9 @@
 
 import os
 import urllib
-#import gtk
-#import nautilus
-#import gconf
-#import urllib
 from nfs_lan.nfs_browse import AvahiNFSBrowse
 #from ConfigParser import ConfigParser
 from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
-#import gio
 
 #config = ConfigParser({'net_folder':'/net'})
 #config.read(os.path.expanduser('~/.nfs-lan'))
