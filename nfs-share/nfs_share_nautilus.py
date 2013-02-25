@@ -64,7 +64,7 @@ class NfsShareExtension(GObject.GObject, Nautilus.MenuProvider, Nautilus.InfoPro
 	def get_file_items(self, window, files):
 		if len(files) != 1:
 			return
-        
+		
 		file = files[0]
 		filename = urllib.unquote(file.get_uri()[7:])
 		if not file.is_directory() or file.get_uri_scheme() != 'file' or filename.startswith(self.net_folder):

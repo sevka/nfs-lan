@@ -121,18 +121,18 @@ class InfoPanel(Gtk.HBox):
 		self.pack_start(btn, False, False, 10)
 		self.pack_start(hbox2, False, False, 10)
 		#self.pack_start(btn3, False,False, 10)
-		#self.pack_start(btn4, False,False, 10)		
+		#self.pack_start(btn4, False,False, 10)
 
 class LocationPanel(GObject.GObject, Nautilus.LocationWidgetProvider):
-    def __init__(self):
-        LocationPanel.refreshed = False
-        self.frame = False
-    
-    def get_widget(self, uri, window):
-    	if not uri:
-    		return False
-    	filename = urllib.unquote(uri[7:])
-    	if not filename.startswith(netFolder):
+	def __init__(self):
+		LocationPanel.refreshed = False
+		self.frame = False
+	
+	def get_widget(self, uri, window):
+		if not uri:
+			return False
+		filename = urllib.unquote(uri[7:])
+		if not filename.startswith(netFolder):
 			return False
 		if not self.frame:
 			self.frame = Gtk.Frame()
