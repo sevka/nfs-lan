@@ -112,7 +112,7 @@ class InfoPanel(gtk.HBox):
 		os.system("cd " + self.net_folder + "/" + compName)
 		os.system("cd " + self.net_folder + "/" + compName + '.local')
 		
-	def __refresh(self, sender = None):
+	def refresh(self, sender = None):
 		a = AvahiNFSBrowse(self.net_folder)
 		a.walk_comps()
 		
@@ -128,7 +128,7 @@ class InfoPanel(gtk.HBox):
 		label3 = gtk.Label('Computer name or ip:')
 		self.entry = gtk.Entry()
 		btn2 = gtk.Button('Go', gtk.STOCK_GO_FORWARD)
-		btn.connect('clicked',self.__refresh)
+		btn.connect('clicked',self.refresh)
 		btn2.connect('clicked', self.__openComp)
 		btn3 = gtk.Button('Help', gtk.STOCK_HELP)
 		btn4 = gtk.Button('Preferences', gtk.STOCK_PREFERENCES)
@@ -147,7 +147,7 @@ class InfoPanel(gtk.HBox):
 
 class LocationProviderExample(nautilus.LocationWidgetProvider):
     def __init__(self):
-        pass
+        LocationProviderExample.refreshed = False
     
     def get_widget(self, uri, window):
     	if not uri:
@@ -156,7 +156,10 @@ class LocationProviderExample(nautilus.LocationWidgetProvider):
     	if not filename.startswith(netFolder):
 			return False
 
-        hbox = InfoPanel('Test')
-        hbox.show_all()
-        return hbox
+        self.hbox = InfoPanel('Test')
+        self.hbox.show_all()
+        if not LocationProviderExample.refreshed:
+			self.hbox.refresh(self)
+			LocationProviderExample.refreshed = True
+        return self.hbox
 		
