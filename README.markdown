@@ -27,14 +27,15 @@ Installation
 Just install *.deb package. Autofs package is in the dependecies, but you have to configure it by yourself, if you want to browse NFS shares automatically. 
 Please edit /etc/auto.master and uncomment this line:
 
-  /net -hosts
+    /net -hosts
 
-You can add --timeout parameter (in this case there are no problem with unmounting shares which going down):
+You can add --timeout parameter (in this case you have a problems with unmounting shares which going down):
 
-  /net -hosts --timeout=60
+    /net -hosts --timeout=60
 
 Then restart autofs:
-  sudo service autofs restart
+
+    sudo service autofs restart
 
 Usage
 -----
