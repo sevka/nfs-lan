@@ -42,7 +42,7 @@ Usage
 ###NFS sharing
 To share folder in Nautilus, just right-click on folder and choose "Share this folder through NFS...". Then setup sharing options and click Ok.
 
-  **Behind the scene**: NFS-LAN modify /etc/exports file and restarts NFS server
+**Behind the scene**: NFS-LAN modify /etc/exports file and restarts NFS server
 
 ###NFS browsing
 Go to /net folder in Nautilus. When you open /net folder first time in the session, NFS-LAN do `Refresh` action. 
@@ -51,6 +51,6 @@ NFS-LAN search for remote computers with avahi daemon activated (in Ubuntu avahi
   * use `Computer name or ip` area
   * or just go to URI: /net/your_computer_name_or_ip
   
-  **Behind the scene**. When you first time open /net folder or press Refresh button in the top panel, NFS-LAN search for remote PCs
-  with avahi-daemon activated, then search for shares on these PCs. And then just do command 'cd /net/computer_name'.
-  Autofs do the rest.
+**Behind the scene**. When you first time open /net folder or press Refresh button in the top panel, NFS-LAN search for remote PCs
+with avahi-daemon activated, then search for shares on these PCs. And then just do command 'cd /net/computer_name'.
+Autofs do the rest.
